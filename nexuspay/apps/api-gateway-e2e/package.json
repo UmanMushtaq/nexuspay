@@ -8,7 +8,7 @@
       "api-gateway"
     ],
     "scripts":{
-        "start":"npx nx serve api-gateway"
+      
     },
     "targets": {
       "e2e": {

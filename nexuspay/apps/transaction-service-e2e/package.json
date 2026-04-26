@@ -1,0 +1,27 @@
+{
+  "name": "@nexuspay/transaction-service-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "transaction-service-e2e",
+    "implicitDependencies": [
+      "transaction-service"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/transaction-service-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "transaction-service:build",
+          "transaction-service:serve"
+        ]
+      }
+    }
+  }
+}

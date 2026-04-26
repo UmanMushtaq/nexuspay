@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start":"npx nx serve api-gateway"
+    "start": "npx nx serve api-gateway"
   },
   "private": true,
   "devDependencies": {
@@ -13,11 +13,11 @@
     "@nx/eslint": "22.6.5",
     "@nx/eslint-plugin": "22.6.5",
     "@nx/jest": "22.6.5",
-    "@nx/js": "22.6.5",
-    "@nx/nest": "^22.6.5",
-    "@nx/node": "22.6.5",
-    "@nx/web": "22.6.5",
-    "@nx/webpack": "22.6.5",
+    "@nx/js": "22.7.0",
+    "@nx/nest": "22.7.0",
+    "@nx/node": "22.7.0",
+    "@nx/web": "22.7.0",
+    "@nx/webpack": "22.7.0",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
@@ -40,7 +40,8 @@
   },
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/*",
+    "libs/*"
   ],
   "dependencies": {
     "@nestjs/common": "^11.0.0",
