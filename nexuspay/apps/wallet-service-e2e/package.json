@@ -1,0 +1,27 @@
+{
+  "name": "@nexuspay/wallet-service-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "wallet-service-e2e",
+    "implicitDependencies": [
+      "wallet-service"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/wallet-service-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "wallet-service:build",
+          "wallet-service:serve"
+        ]
+      }
+    }
+  }
+}

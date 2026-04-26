@@ -52,7 +52,16 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/api-gateway-e2e/**/*"]
+      "exclude": [
+        "apps/api-gateway-e2e/**/*",
+        "apps/user-service-e2e/**/*",
+        "apps/wallet-service-e2e/**/*",
+        "apps/wallet-service-e2e/**/*",
+        "apps/transaction-service-e2e/**/*",
+        "apps/notification-service-e2e/**/*",
+        "apps/analytics-service-e2e/**/*",
+        "apps/payment-gateway-service-e2e/**/*"
+      ]
     }
   ],
   "targetDefaults": {
