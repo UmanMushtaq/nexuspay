@@ -1,0 +1,27 @@
+{
+  "name": "@nexuspay/payment-gateway-service-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "payment-gateway-service-e2e",
+    "implicitDependencies": [
+      "payment-gateway-service"
+    ],
+    "targets": {
+      "e2e": {
+        "executor": "@nx/jest:jest",
+        "outputs": [
+          "{projectRoot}/test-output/jest/coverage"
+        ],
+        "options": {
+          "jestConfig": "apps/payment-gateway-service-e2e/jest.config.cts",
+          "passWithNoTests": true
+        },
+        "dependsOn": [
+          "payment-gateway-service:build",
+          "payment-gateway-service:serve"
+        ]
+      }
+    }
+  }
+}

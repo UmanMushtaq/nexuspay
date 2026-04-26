@@ -1,0 +1,131 @@
+services:
+  # ==================== DATABASES ====================
+  user-db:
+    image: postgres:16-alpine
+    container_name: nexuspay-user-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5438:5432"
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+
+  wallet-db:
+    image: postgres:16-alpine
+    container_name: nexuspay-wallet-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wallet_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - wallet-db-data:/var/lib/postgresql/data
+
+  transaction-db:
+    image: postgres:16-alpine
+    container_name: nexuspay-transaction-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: transaction_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5434:5432"
+    volumes:
+      - transaction-db-data:/var/lib/postgresql/data
+
+  notification-db:
+    image: postgres:16-alpine
+    container_name: nexuspay-notification-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5435:5432"
+    volumes:
+      - notification-db-data:/var/lib/postgresql/data
+
+  analytics-db:
+    image: postgres:16-alpine
+    container_name: nexuspay-analytics-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: analytics_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5436:5432"
+    volumes:
+      - analytics-db-data:/var/lib/postgresql/data
+
+  payment-db:
+    image: postgres:16-alpine
+    container_name: nexuspay-payment-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5437:5432"
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+
+  # ==================== INFRASTRUCTURE ====================
+  redis:
+    image: redis:7-alpine
+    container_name: nexuspay-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: nexuspay-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: nexuspay-zookeeper
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: nexuspay-kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+
+volumes:
+  user-db-data:
+  wallet-db-data:
+  transaction-db-data:
+  notification-db-data:
+  analytics-db-data:
+  payment-db-data:
