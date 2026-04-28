@@ -1,6 +1,8 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { User } from "../../../domain/entities/user.entity";
 import { Kyc } from "../../../domain/entities/kyc.entity";
+import { UserOrmEntity } from "../entities/user.orm-entity";
+import { KycOrmEntity } from "../entities/kyc.orm-entity";
 
 
 
@@ -10,8 +12,8 @@ host: 'localhost',
 port: 5432,
 username: 'postgres',
 password: 'password',
-entities: [User, Kyc],
-synchronize: true, // Disable in production 
+entities: [UserOrmEntity, KycOrmEntity],
+synchronize: false, // Disable in production 
 logging:true,
 autoLoadEntities: true
 }
