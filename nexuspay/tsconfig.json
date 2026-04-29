@@ -49,18 +49,6 @@
       "path": "./libs/common"
     },
     {
-      "path": "./libs/common"
-    },
-    {
-      "path": "./libs/common"
-    },
-    {
-      "path": "./libs/domain"
-    },
-    {
-      "path": "./libs/common"
-    },
-    {
       "path": "./libs/domain"
     }
   ]
