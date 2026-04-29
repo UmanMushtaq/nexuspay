@@ -273,9 +273,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Your Name** - Senior Backend Engineer
 
-- LinkedIn: [Your LinkedIn Profile]
-- Email: [your.email@example.com]
-- Portfolio: [Your Portfolio Website]
+- LinkedIn: https://www.linkedin.com/in/umanmushtaq/
+- Email: umanmushtaq72@gmail.com
+- Portfolio: umanmushtaq.com
 
 ---
 
