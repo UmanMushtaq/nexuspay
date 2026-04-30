@@ -8,8 +8,11 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white)](https://postgresql.org/)
 [![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?logo=redis&logoColor=white)](https://redis.io/)
 [![Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)](https://kafka.apache.org/)
+[![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
 
-> **Ultra-scalable event-driven fintech transaction platform** designed for 10,000+ TPS with enterprise-grade microservices architecture, demonstrating senior backend engineering capabilities.
+> 🚧 **Status: Active Development** — Core microservices implemented. KYC workflow, payment gateway integration, and e2e test coverage in progress. Target completion: Q3 2026.
+
+**Ultra-scalable event-driven fintech transaction platform** designed for 10,000+ TPS with enterprise-grade microservices architecture, demonstrating senior backend engineering capabilities.
 
 ## 🚀 Overview
 
@@ -55,6 +58,16 @@ NEXUSPAY is a production-ready fintech platform built with modern microservices 
                     │ • Dashboards   │    │ • PCI Compliance│
                     └─────────────────┘    └─────────────────┘
 ```
+
+### Architecture Decisions
+
+| Concern | Solution | Why |
+|---|---|---|
+| Distributed transactions | RabbitMQ + Saga pattern | Avoids 2PC, ensures eventual consistency |
+| Real-time analytics | Kafka event streaming | High-throughput, replay-capable audit trail |
+| Caching & locks | Redis | Sub-millisecond latency, distributed lock primitives |
+| Service isolation | Nx monorepo, separate DBs per service | Independent deployability, no shared state |
+| Code structure | Clean/Hexagonal Architecture + DDD | Loose coupling, testability, domain clarity |
 
 ### Technology Stack
 
@@ -245,11 +258,15 @@ API documentation is available via Swagger UI at `/api/docs` when the API Gatewa
 
 ### Key Endpoints
 
-- `POST /auth/login` - User authentication
-- `GET /users/profile` - User profile management
-- `POST /wallets/transfer` - Money transfers
-- `GET /transactions` - Transaction history
-- `POST /payments/process` - Payment processing
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/auth/login` | User authentication |
+| POST | `/auth/refresh` | Refresh access token |
+| GET | `/users/profile` | User profile management |
+| POST | `/kyc/submit` | Submit KYC documents |
+| POST | `/wallets/transfer` | Money transfers |
+| GET | `/transactions` | Transaction history |
+| POST | `/payments/process` | Payment processing |
 
 ## 🏆 Skills Demonstrated
 
@@ -271,61 +288,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**Your Name** - Senior Backend Engineer
+**Uman Mushtaq** - Mid-Level Backend Engineer
 
-- LinkedIn: https://www.linkedin.com/in/umanmushtaq/
-- Email: umanmushtaq72@gmail.com
-- Portfolio: umanmushtaq.com
+- 📍 Paris, France (APS Visa — authorized to work in France & EU)
+- 💼 LinkedIn: https://www.linkedin.com/in/umanmushtaq/
+- 📧 Email: umanmushtaq72@gmail.com
+- 🐙 GitHub: https://github.com/UmanMushtaq
 
 ---
 
 *Built with ❤️ using NestJS, Nx, and modern enterprise architecture patterns.*
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# nexuspay
