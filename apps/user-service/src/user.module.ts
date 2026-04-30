@@ -5,6 +5,7 @@ import { UserOrmEntity } from "./infrastructure/persistence/entities/user.orm-en
 import { KycOrmEntity } from "./infrastructure/persistence/entities/kyc.orm-entity";
 import { UserController } from "./infrastructure/controllers/user.controller";
 import { RegisterUserUseCase } from "./application/use-cases";
+import { UserRepositoryImpl } from "./infrastructure/repositories/user.repositry";
 
 
 @Module({
@@ -18,7 +19,11 @@ import { RegisterUserUseCase } from "./application/use-cases";
         UserController
     ],
     providers:[
-RegisterUserUseCase
+RegisterUserUseCase,
+{
+    provide:'UserRepository',
+    useClass: UserRepositoryImpl
+}
     ],
 })
 
