@@ -1,6 +1,6 @@
 // apps/user-service/src/domain/entities/kyc.entity.ts
-import { KycStatus } from './kyc-status.enum';
-import { IdType } from './id-type.enum';
+import { KycStatus } from './KycStatus.enum';
+import { IdType } from './IdType.enum';
 
 export class Kyc {
   readonly id!: string;                    // ! = definite assignment assertion

@@ -1,26 +1,46 @@
-# Nx
+# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# compiled output
 dist
-.nx/cache
-.tmp
+tmp
+out-tsc
 
-# Node
+# dependencies
 node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Docker
-docker-compose.override.yml
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Environment
-.env
-.env.local
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# IDE
-.vscode
-.idea
-*.swp
-*.swo
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
 
-# OS
+# System Files
 .DS_Store
+Thumbs.db
+
+.nx/cache
+.nx/workspace-data
+.claude/worktrees
+.claude/settings.local.json
+
+test-output
