@@ -6,6 +6,7 @@ import { KycOrmEntity } from "./infrastructure/persistence/entities/kyc.orm-enti
 import { UserController } from "./infrastructure/controllers/user.controller";
 import { RegisterUserUseCase } from "./application/use-cases";
 import { UserRepositoryImpl } from "./infrastructure/repositories/user.repositry";
+import { SubmitKycUseCase } from "./application/use-cases/submit-kyc.use-case";
 
 
 
@@ -22,6 +23,7 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     ],
   providers: [
     RegisterUserUseCase,
+    SubmitKycUseCase,
     UserRepositoryImpl,           // Direct registration (simplest way)
   ],
 })
