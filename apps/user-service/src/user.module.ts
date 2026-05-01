@@ -8,6 +8,8 @@ import { RegisterUserUseCase } from "./application/use-cases";
 import { UserRepositoryImpl } from "./infrastructure/repositories/user.repositry";
 import { SubmitKycUseCase } from "./application/use-cases/submit-kyc.use-case";
 import { JwtStrategy } from "./infrastructure/strategies/jwt.strategy";
+import { LoginUseCase } from "./application/use-cases/login.use-case";
+import { JwtModule } from "@nestjs/jwt";
 
 
 
@@ -17,7 +19,11 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
         TypeOrmModule.forRootAsync({
             useFactory:()=>databaseConfig,
         }),
-        TypeOrmModule.forFeature([UserOrmEntity, KycOrmEntity])
+        TypeOrmModule.forFeature([UserOrmEntity, KycOrmEntity]),
+        JwtModule.register({
+            secret:'your-secret-key-change-in-production',
+            signOptions:{expiresIn:'1h'},
+        })
     ],
     controllers:[
         UserController
@@ -27,6 +33,7 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     SubmitKycUseCase,
     UserRepositoryImpl,           // Direct registration (simplest way)
     JwtStrategy,    
+    LoginUseCase
   ],
 })
 
