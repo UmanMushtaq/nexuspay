@@ -1,23 +1,32 @@
 
+import {  HttpStatus, Injectable } from "@nestjs/common";
 import { KycStatus } from "../../domain/entities/KycStatus.enum";
 import { User } from "../../domain/entities/user.entity";
 import { UserRole } from "../../domain/entities/UserRole.enum";
-import { UserRepository } from "../../domain/repositories/user.repository.interface";
+
 import { CreateUserDto } from "../../presentation/dtos/create-user.dto";
 import { RegisterResponseDto } from "../../presentation/dtos/register-response.dto";
 import * as bcrypt from 'bcrypt';
 
+import { UserRepositoryImpl } from "../../infrastructure/repositories/user.repositry";
+import { DomainException } from "../../common/exceptions/domain.exception";
 
+
+
+@Injectable()
 export class RegisterUserUseCase {
 
-    constructor(private readonly userRepository:UserRepository){}
+ constructor(
+  private readonly userRepository: UserRepositoryImpl  // No @Inject needed now
+) {}
 
 
     async execute (dto:CreateUserDto): Promise<RegisterResponseDto>{
-
+        try {
+            
         const existingUser= await this.userRepository.findByEmail(dto.email)
         if (existingUser){
-            throw new Error('Email already in use');
+            throw new DomainException('Email already in use');
         }
 
         const saltRounds = 10;
@@ -44,5 +53,11 @@ export class RegisterUserUseCase {
             lastName: createdUser.lastName,
             message: 'User registered successfully'
         })
+        } catch (error) {
+            if (error instanceof DomainException){
+                throw error; // Re-throw known domain exceptions
+            }
+            throw new DomainException('An unexpected error occurred during registration', HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 }
