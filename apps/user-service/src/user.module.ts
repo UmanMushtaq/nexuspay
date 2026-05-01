@@ -8,6 +8,8 @@ import { RegisterUserUseCase } from "./application/use-cases";
 import { UserRepositoryImpl } from "./infrastructure/repositories/user.repositry";
 
 
+
+export const USER_REPOSITORY = 'USER_REPOSITORY';
 @Module({
     imports:[
         TypeOrmModule.forRootAsync({
@@ -18,13 +20,10 @@ import { UserRepositoryImpl } from "./infrastructure/repositories/user.repositry
     controllers:[
         UserController
     ],
-    providers:[
-RegisterUserUseCase,
-{
-    provide:'UserRepository',
-    useClass: UserRepositoryImpl
-}
-    ],
+  providers: [
+    RegisterUserUseCase,
+    UserRepositoryImpl,           // Direct registration (simplest way)
+  ],
 })
 
 export class UserModule{}
