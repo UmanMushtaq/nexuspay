@@ -7,6 +7,7 @@ import { UserController } from "./infrastructure/controllers/user.controller";
 import { RegisterUserUseCase } from "./application/use-cases";
 import { UserRepositoryImpl } from "./infrastructure/repositories/user.repositry";
 import { SubmitKycUseCase } from "./application/use-cases/submit-kyc.use-case";
+import { JwtStrategy } from "./infrastructure/strategies/jwt.strategy";
 
 
 
@@ -25,6 +26,7 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     RegisterUserUseCase,
     SubmitKycUseCase,
     UserRepositoryImpl,           // Direct registration (simplest way)
+    JwtStrategy,    
   ],
 })
 
