@@ -10,15 +10,29 @@ import * as bcrypt from 'bcrypt';
 
 import { UserRepositoryImpl } from "../../infrastructure/repositories/user.repositry";
 import { DomainException } from "../../common/exceptions/domain.exception";
+import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
+import { rabbitMQConfig } from "../../infrastructure/config/rabbitmq.config";
+
 
 
 
 @Injectable()
 export class RegisterUserUseCase {
 
+    private client: ClientProxy
  constructor(
   private readonly userRepository: UserRepositoryImpl  // No @Inject needed now
 ) {}
+   onModuleInit(){
+   this.client = ClientProxyFactory.create({
+      transport: Transport.RMQ,
+      options: {
+        urls: [rabbitMQConfig.url],
+        queue: rabbitMQConfig.queue,
+        queueOptions: { durable: true },
+      },
+    });
+   } 
 
 
     async execute (dto:CreateUserDto): Promise<RegisterResponseDto>{
@@ -46,6 +60,15 @@ export class RegisterUserUseCase {
       isPhoneVerified: false,
         })
         const createdUser = await this.userRepository.create(user)
+
+        this.client.emit('user.registered',{
+            userId:createdUser.id,
+            email:createdUser.email,
+            firstName:createdUser.firstName,
+            timestamp: new Date(),
+            event: 'user.registered'
+        })
+
         return new RegisterResponseDto({
             id: createdUser.id,
             email: createdUser.email,
