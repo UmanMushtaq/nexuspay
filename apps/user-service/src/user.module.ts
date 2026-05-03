@@ -10,6 +10,7 @@ import { SubmitKycUseCase } from "./application/use-cases/submit-kyc.use-case";
 import { JwtStrategy } from "./infrastructure/strategies/jwt.strategy";
 import { LoginUseCase } from "./application/use-cases/login.use-case";
 import { JwtModule } from "@nestjs/jwt";
+import { UserRegisteredConsumer } from "./infrastructure/consumers/user-registered.consumers";
 
 
 
@@ -33,7 +34,8 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     SubmitKycUseCase,
     UserRepositoryImpl,           // Direct registration (simplest way)
     JwtStrategy,    
-    LoginUseCase
+    LoginUseCase,
+    UserRegisteredConsumer
   ],
 })
 
