@@ -11,6 +11,7 @@ import { JwtStrategy } from "./infrastructure/strategies/jwt.strategy";
 import { LoginUseCase } from "./application/use-cases/login.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { UserRegisteredConsumer } from "./infrastructure/consumers/user-registered.consumers";
+import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
 
 
 
@@ -37,6 +38,7 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     LoginUseCase,
     UserRegisteredConsumer
   ],
+  exports:[ JwtAuthGuard]
 })
 
 export class UserModule{}
