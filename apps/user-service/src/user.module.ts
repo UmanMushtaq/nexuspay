@@ -38,7 +38,6 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     LoginUseCase,
     UserRegisteredConsumer
   ],
-  exports:[ JwtAuthGuard]
 })
 
 export class UserModule{}
