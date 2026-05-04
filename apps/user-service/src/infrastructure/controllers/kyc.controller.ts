@@ -2,6 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Param, Post, Req, UseGuards } f
 import { SubmitKycUseCase } from "../../application/use-cases/submit-kyc.use-case";
 import { SubmitKycDto } from "../../presentation/dtos/submit-kyc.dto";
 import { KycResponseDto } from "../../presentation/dtos/kyc-response.dto";
+import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 
 
 @Controller('users')

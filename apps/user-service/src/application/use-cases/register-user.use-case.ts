@@ -16,15 +16,18 @@ import { rabbitMQConfig } from "../../infrastructure/config/rabbitmq.config";
 
 
 
+
 @Injectable()
 export class RegisterUserUseCase {
 
-    private client: ClientProxy
+    private client!: ClientProxy
  constructor(
-  private readonly userRepository: UserRepositoryImpl  // No @Inject needed now
+        
+  private readonly userRepository: UserRepositoryImpl,  // No @Inject needed now
+  
 ) {}
-   onModuleInit(){
-   this.client = ClientProxyFactory.create({
+ onModuleInit() {
+    this.client = ClientProxyFactory.create({
       transport: Transport.RMQ,
       options: {
         urls: [rabbitMQConfig.url],
@@ -32,12 +35,12 @@ export class RegisterUserUseCase {
         queueOptions: { durable: true },
       },
     });
-   } 
+  }
 
 
     async execute (dto:CreateUserDto): Promise<RegisterResponseDto>{
         try {
-            
+       
         const existingUser= await this.userRepository.findByEmail(dto.email)
         if (existingUser){
             throw new DomainException('Email already in use');
@@ -67,7 +70,11 @@ export class RegisterUserUseCase {
             firstName:createdUser.firstName,
             timestamp: new Date(),
             event: 'user.registered'
-        })
+        }).subscribe(() => {
+            console.log("===================")
+  console.log('✅ Event published to RabbitMQ successfully');
+     console.log("===================")
+});
 
         return new RegisterResponseDto({
             id: createdUser.id,
