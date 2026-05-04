@@ -9,6 +9,6 @@
     "emitDecoratorMetadata": true,
     "target": "es2021"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../wallet-service/src/infrastructure/repositories/wallet.repository.ts"],
   "exclude": []
 }
