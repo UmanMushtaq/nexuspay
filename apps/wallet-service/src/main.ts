@@ -1,4 +1,4 @@
-// apps/wallet-service/src/main.ts
+
 import { NestFactory } from '@nestjs/core';
 import { WalletModule } from './wallet.module';
 import { ValidationPipe } from '@nestjs/common';

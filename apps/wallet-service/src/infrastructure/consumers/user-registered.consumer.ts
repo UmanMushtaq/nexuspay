@@ -1,4 +1,4 @@
-// apps/wallet-service/src/infrastructure/consumers/user-registered.consumer.ts
+
 import { Injectable, Logger } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 
