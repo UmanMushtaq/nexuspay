@@ -1,4 +1,4 @@
-import { Controller, Get, Injectable, Param } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 import { HttpService } from '@nestjs/axios';
 
