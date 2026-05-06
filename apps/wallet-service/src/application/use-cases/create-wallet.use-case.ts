@@ -12,7 +12,8 @@ export class CreateWalletUseCase {
     @OnEvent('user.registered')
     async handleUserRegisteredEvent(payload: { userId: string }) {
         this.logger.log(`Creating wallet for new user: ${payload.userId}`)
-        const wallet = new Wallet({
+      try {
+          const wallet = new Wallet({
             userId: payload.userId,
       balance: 0,
       currency: 'EUR',
@@ -21,5 +22,9 @@ export class CreateWalletUseCase {
         await this.walletRepository.create(wallet);
 
     this.logger.log(`Wallet created successfully for user ${payload.userId}`);
+    this.logger.log(`Wallet ID: ${wallet.id}`);
+      } catch (error) {
+        this.logger.error(`Error creating wallet for user ${payload.userId}:`, error);
+      }
     }
 }

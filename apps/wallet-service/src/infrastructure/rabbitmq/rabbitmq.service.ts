@@ -1,4 +1,4 @@
-// apps/wallet-service/src/infrastructure/rabbitmq/rabbitmq.service.ts
+
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import * as amqp from 'amqplib';
 
