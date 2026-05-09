@@ -12,6 +12,12 @@ services:
       - "5438:5432"
     volumes:
       - user-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
 
   wallet-db:
     image: postgres:16-alpine
@@ -25,6 +31,11 @@ services:
       - "5433:5432"
     volumes:
       - wallet-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   transaction-db:
     image: postgres:16-alpine
@@ -38,6 +49,11 @@ services:
       - "5434:5432"
     volumes:
       - transaction-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   notification-db:
     image: postgres:16-alpine
@@ -51,6 +67,11 @@ services:
       - "5435:5432"
     volumes:
       - notification-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   analytics-db:
     image: postgres:16-alpine
@@ -64,6 +85,11 @@ services:
       - "5436:5432"
     volumes:
       - analytics-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   payment-db:
     image: postgres:16-alpine
@@ -77,6 +103,11 @@ services:
       - "5437:5432"
     volumes:
       - payment-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -Upostgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ==================== INFRASTRUCTURE ====================
   redis:
@@ -85,6 +116,14 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -96,6 +135,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
@@ -106,6 +150,11 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "-w", "2", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   kafka:
     image: confluentinc/cp-kafka:7.6.0
@@ -121,6 +170,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
 
 volumes:
   user-db-data:
@@ -129,3 +183,5 @@ volumes:
   notification-db-data:
   analytics-db-data:
   payment-db-data:
+  redis-data:
+  rabbitmq-data:
