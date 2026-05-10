@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
-
   "files": [],
   "references": [
     {
@@ -52,5 +51,20 @@
     {
       "path": "./libs/domain"
     }
-  ]
+  ],
+  "compilerOptions": {
+   "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "typeRoots": ["node_modules/@types"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "isolatedModules": true,           // Keep it true (Nx prefers this)
+    "forceConsistentCasingInFileNames": true
+  }
+
 }

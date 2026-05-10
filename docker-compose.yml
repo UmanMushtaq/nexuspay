@@ -118,9 +118,9 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
-    command: ["redis-server", "--appendonly", "yes"]
+    command: redis-server --appendonly yes --requirepass nexuspay123
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli","-a","nexuspay123", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
