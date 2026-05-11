@@ -30,7 +30,7 @@ export class RedisService{
         
     }
 
-    async unlocakWallet(walletId:string):Promise<void>{
+    async unlockWallet(walletId:string):Promise<void>{
         const lockKey = `lock:wallet:${walletId}`;
         try {
               await this.cacheManager.del(lockKey);
