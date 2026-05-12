@@ -2,7 +2,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { OnEvent } from '@nestjs/event-emitter';
-
+import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { Transaction } from '../../domain/entities/transaction.entity';
 
 import { TransactionStatus } from '../../domain/entities/transaction-status.enum';
@@ -14,20 +14,29 @@ export class TransactionSaga{
     private readonly logger = new Logger(TransactionSaga.name)
     constructor (private readonly transactionRepository:TransactionRepositoryImpl){}
 
-   @OnEvent('transaction.created')
+    @RabbitSubscribe({
+      exchange:'wallet.exchange',
+      routingKey:'wallet.debit',
+      queue:'transaction.wallet.debit.queue'
+    })
     async handleTransactionCreated(transaction:Transaction):Promise<void>{
         this.logger.log(`Starting Saga for transaction: ${transaction.id}`);
         try {
+          await this.transactionRepository.updateStatus(transaction.id, TransactionStatus.COMPLETED);
             this.logger.log(`Saga completed successfully for transaction ${transaction.id}`);
         } catch (error) {
             this.logger.error(`Saga failed for transaction ${transaction.id}, starting rollback`, error);
-            await this.transactionRepository.updateStatus(transaction.id, TransactionStatus.COMPLETED);
-      await this.rollbackTransaction(transaction.id);
+           
         }
     }
-    private async rollbackTransaction(transactionId: string) {
+      @RabbitSubscribe({
+      exchange:'wallet.exchange',
+      routingKey:'wallet.debit',
+      queue:'transaction.wallet.debit.queue'
+    })
+    async handleWalletDebitFailed(transactionId: string) {
     try {
-      await this.transactionRepository.updateStatus(transactionId, TransactionStatus.ROLLBACK);
+      await this.transactionRepository.updateStatus(transactionId, TransactionStatus.FAILED);
       this.logger.log(`Transaction rolled back: ${transactionId}`);
     } catch (e) {
       this.logger.error('Rollback failed', e);

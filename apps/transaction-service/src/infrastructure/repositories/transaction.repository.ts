@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Transaction } from '../../domain/entities/transaction.entity';
 import { TransactionOrmEntity } from '../persistence/entities/transaction.orm-entity';
 import { TransactionRepository } from '../../domain/repositories/transaction.repository.interface';
+import { TransactionStatus } from '../../domain/entities/transaction-status.enum';
 
 @Injectable()
 export class TransactionRepositoryImpl implements TransactionRepository {
@@ -59,7 +60,13 @@ export class TransactionRepositoryImpl implements TransactionRepository {
     });
   }
 
-  async updateStatus(id: string, status: string): Promise<void> {
-    await this.transactionRepo.update(id, { status });
+  async updateStatus(transactionId: string, status: TransactionStatus): Promise<void> {
+    await this.transactionRepo.update(
+    { id: transactionId },
+    { 
+      status,
+      updatedAt: new Date()
+    }
+  );
   }
 }
