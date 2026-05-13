@@ -37,7 +37,7 @@ import { connect } from 'http2';
           type:'topic',
         }
       ],
-        uri: process.env.RABBITMQ_URI || 'amqp://localhost:5672',
+        uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
         connectionInitOptions: { wait: false },
         enableControllerDiscovery: true,
     }),
