@@ -9,10 +9,24 @@ import { databaseConfig } from "./infrastructure/persistence/config/database.con
 import { RabbitMQService } from "./infrastructure/rabbitmq/rabbitmq.service";
 import { WalletSaga } from "./application/sagas/wallet.saga";
 import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
-
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
  imports: [
+  CacheModule.registerAsync({
+    isGlobal: true,
+    useFactory: async () => ({
+      store: await redisStore({
+        socket: {
+          host: process.env.REDIS_HOST || 'localhost',
+          port: Number(process.env.REDIS_PORT) || 6379,
+        },
+        password: process.env.REDIS_PASSWORD || 'nexuspay123',
+        ttl: 3600,   // 1 hour in seconds
+      }),
+    }),
+  }),
   RabbitMQModule.forRoot({
   exchanges: [
     { name: 'exchange.transaction', type: 'topic' },

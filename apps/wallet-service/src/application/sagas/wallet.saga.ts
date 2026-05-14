@@ -19,7 +19,7 @@ export class WalletSaga {
     try {
       // TODO: Implement actual debit logic here later
       this.logger.log(`[WalletSaga] Processing debit for wallet ${event.fromWalletId}`);
-        const debitSuccess = true; // Simulate success for now
+        const debitSuccess = false; // Simulate success for now
       // For now, just log success (we will add real debit + response event later)
       // await this.walletService.debit(event.fromWalletId, event.amount, event.transactionId);
         if (debitSuccess) {
