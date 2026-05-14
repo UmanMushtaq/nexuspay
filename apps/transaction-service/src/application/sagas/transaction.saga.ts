@@ -4,7 +4,7 @@ import { Get, HttpCode, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { Transaction } from '../../domain/entities/transaction.entity';
-
+import { WalletDebitedEvent, WalletDebitFailedEvent } from '@nexuspay/domain';
 import { TransactionStatus } from '../../domain/entities/transaction-status.enum';
 
 import { TransactionRepositoryImpl } from '../../infrastructure/repositories/transaction.repository';
@@ -20,13 +20,13 @@ export class TransactionSaga{
       queue:'transaction.wallet.debited.queue',
    
     }) 
-    async handleTransactionCreated(transaction:Transaction):Promise<void>{
-        this.logger.log(`Starting Saga for transaction: ${transaction.id}`);
+    async handleTransactionCreated(event:WalletDebitedEvent):Promise<void>{
+        this.logger.log(`Starting Saga for transaction: ${event.transactionId}`);
         try {
-          await this.transactionRepository.updateStatus(transaction.id, TransactionStatus.COMPLETED);
-            this.logger.log(`Saga completed successfully for transaction ${transaction.id}`);
+          await this.transactionRepository.updateStatus(event.transactionId, TransactionStatus.COMPLETED);
+            this.logger.log(`Saga completed successfully for transaction ${event.transactionId}`);
         } catch (error) {
-            this.logger.error(`Saga failed for transaction ${transaction.id}, starting rollback`, error);
+            this.logger.error(`Saga failed for transaction ${event.transactionId}, starting rollback`, error);
            
         }
     }
@@ -35,10 +35,10 @@ export class TransactionSaga{
     routingKey: 'wallet.debit.failed',
     queue: 'transaction.wallet.debit.failed.queue',
   }) 
-    async handleWalletDebitFailed(transactionId: string) {
+    async handleWalletDebitFailed(event: WalletDebitFailedEvent) {
     try {
-      await this.transactionRepository.updateStatus(transactionId, TransactionStatus.FAILED);
-      this.logger.log(`Transaction rolled back: ${transactionId}`);
+      await this.transactionRepository.updateStatus(event.transactionId, TransactionStatus.FAILED);
+      this.logger.log(`Transaction rolled back: ${event.transactionId}`);
     } catch (e) {
       this.logger.error('Rollback failed', e);
     }
