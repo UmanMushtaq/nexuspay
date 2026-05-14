@@ -1,5 +1,5 @@
 
-import { Injectable, Logger } from '@nestjs/common';
+import { Get, HttpCode, HttpStatus, Injectable, Logger } from '@nestjs/common';
 
 import { OnEvent } from '@nestjs/event-emitter';
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
@@ -16,9 +16,10 @@ export class TransactionSaga{
 
     @RabbitSubscribe({
       exchange:'wallet.exchange',
-      routingKey:'wallet.debit',
-      queue:'transaction.wallet.debit.queue'
-    })
+      routingKey:'wallet.debited',
+      queue:'transaction.wallet.debited.queue',
+   
+    }) 
     async handleTransactionCreated(transaction:Transaction):Promise<void>{
         this.logger.log(`Starting Saga for transaction: ${transaction.id}`);
         try {
@@ -29,11 +30,11 @@ export class TransactionSaga{
            
         }
     }
-      @RabbitSubscribe({
-      exchange:'wallet.exchange',
-      routingKey:'wallet.debit',
-      queue:'transaction.wallet.debit.queue'
-    })
+     @RabbitSubscribe({
+    exchange: 'wallet.exchange',
+    routingKey: 'wallet.debit.failed',
+    queue: 'transaction.wallet.debit.failed.queue',
+  }) 
     async handleWalletDebitFailed(transactionId: string) {
     try {
       await this.transactionRepository.updateStatus(transactionId, TransactionStatus.FAILED);
@@ -42,4 +43,13 @@ export class TransactionSaga{
       this.logger.error('Rollback failed', e);
     }
   }
+  @Get('health')
+@HttpCode(HttpStatus.OK)
+health() {
+  return {
+    status: 'ok',
+    service: 'transaction-service',
+    timestamp: new Date().toISOString(),
+  };
+}
 }
