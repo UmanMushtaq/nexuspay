@@ -9,6 +9,18 @@
     "emitDecoratorMetadata": true,
     "target": "es2021"
   },
-  "include": ["src/**/*.ts", "src/application/**/*.ts", "common/**/*.ts", "src/domain/**/*.ts", "src/infrastructure/**/*.ts", "presentation/**/*.ts"],
-  "exclude": []
+  "include": [
+    "src/**/*.ts",
+    "src/application/**/*.ts",
+    "common/**/*.ts",
+    "src/domain/**/*.ts",
+    "src/infrastructure/**/*.ts",
+    "presentation/**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../libs/domain/tsconfig.lib.json"
+    }
+  ]
 }
