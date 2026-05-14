@@ -35,7 +35,11 @@ import { connect } from 'http2';
         {
           name:'exchange.transaction',
           type:'topic',
-        }
+        },
+    {
+      name: 'wallet.exchange',        // ← Add this
+      type: 'topic',
+    },
       ],
         uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
         connectionInitOptions: { wait: false },

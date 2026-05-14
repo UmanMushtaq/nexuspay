@@ -1,7 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Logger, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Logger, Post, UsePipes, ValidationPipe } from "@nestjs/common";
 import { CreateTransactionUseCase } from "../../application/use-cases/create-transaction.use-case";
 import { DomainException } from "../../common/exceptions/domain.exception";
 import { CreateTransferCommand } from "../../application/commands/create-transfer.command";
+import { CreateTransactionDto } from "../../application/dtos/create-transaction.dto";
 
 
 
@@ -15,7 +16,8 @@ export class TransactionController{
 
     @Post('transfer')
     @HttpCode(HttpStatus.CREATED)
-    async createTransfer(@Body() body:any){
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    async createTransfer(@Body() body:CreateTransactionDto){
         try {
             const command = new CreateTransferCommand(
         body.fromWalletId,
