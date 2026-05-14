@@ -7,10 +7,20 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserRegisteredConsumer } from "./infrastructure/consumers/user-registered.consumer";
 import { databaseConfig } from "./infrastructure/persistence/config/database.config";
 import { RabbitMQService } from "./infrastructure/rabbitmq/rabbitmq.service";
+import { WalletSaga } from "./application/sagas/wallet.saga";
+import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 
 
 @Module({
  imports: [
+  RabbitMQModule.forRoot({
+  exchanges: [
+    { name: 'exchange.transaction', type: 'topic' },
+    { name: 'wallet.exchange', type: 'topic' },
+  ],
+  uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
+  connectionInitOptions: { wait: false },
+}),
    TypeOrmModule.forRootAsync({
             useFactory:()=>databaseConfig,
         }),
@@ -22,6 +32,7 @@ import { RabbitMQService } from "./infrastructure/rabbitmq/rabbitmq.service";
     WalletRepositoryImpl,
     UserRegisteredConsumer,
     RabbitMQService,
+    WalletSaga,
     
   ],
 })
