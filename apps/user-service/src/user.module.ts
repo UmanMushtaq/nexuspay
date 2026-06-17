@@ -12,6 +12,8 @@ import { LoginUseCase } from "./application/use-cases/login.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { UserRegisteredConsumer } from "./infrastructure/consumers/user-registered.consumers";
 import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
+import { ReviewKycUseCase } from "./application/use-cases/review-kyc.use-case";
+import { KycController } from "./infrastructure/controllers/kyc.controller";
 
 
 
@@ -28,7 +30,8 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
         })
     ],
     controllers:[
-        UserController
+        UserController,
+        KycController
     ],
   providers: [
     RegisterUserUseCase,
@@ -36,7 +39,8 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     UserRepositoryImpl,           // Direct registration (simplest way)
     JwtStrategy,    
     LoginUseCase,
-    UserRegisteredConsumer
+    UserRegisteredConsumer,
+    ReviewKycUseCase,
   ],
 })
 
