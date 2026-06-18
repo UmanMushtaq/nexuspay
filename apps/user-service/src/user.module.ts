@@ -12,6 +12,10 @@ import { LoginUseCase } from "./application/use-cases/login.use-case";
 import { JwtModule } from "@nestjs/jwt";
 import { UserRegisteredConsumer } from "./infrastructure/consumers/user-registered.consumers";
 import { JwtAuthGuard } from "./common/guards/jwt-auth.guard";
+import { ReviewKycUseCase } from "./application/use-cases/review-kyc.use-case";
+import { KycController } from "./infrastructure/controllers/kyc.controller";
+import { RedisModule } from "@nestjs-modules/ioredis";
+import { GetUserProfileUseCase } from "./application/use-cases/get-user-profile.use-case";
 
 
 
@@ -25,10 +29,19 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
         JwtModule.register({
             secret:'your-secret-key-change-in-production',
             signOptions:{expiresIn:'1h'},
+        }),
+        RedisModule.forRoot({
+           type:'single',
+           options:{
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
+            password: process.env.REDIS_PASSWORD,
+           }
         })
     ],
     controllers:[
-        UserController
+        UserController,
+        KycController
     ],
   providers: [
     RegisterUserUseCase,
@@ -36,7 +49,9 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     UserRepositoryImpl,           // Direct registration (simplest way)
     JwtStrategy,    
     LoginUseCase,
-    UserRegisteredConsumer
+    UserRegisteredConsumer,
+    ReviewKycUseCase,
+    GetUserProfileUseCase
   ],
 })
 

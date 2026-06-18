@@ -16,7 +16,7 @@
     "src/domain/**/*.ts",
     "src/infrastructure/**/*.ts",
     "presentation/**/*.ts"
-  ],
+, "../user-service/src/presentation/dtos/review-kyc.dto.ts"  ],
   "exclude": [],
   "references": [
     {

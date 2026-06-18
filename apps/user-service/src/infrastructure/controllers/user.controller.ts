@@ -7,6 +7,7 @@ import { LoginDto } from "../../presentation/dtos/login.dto";
 import { LoginResponseDto } from "../../presentation/dtos/login-response.dto";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { LoginUseCase } from "../../application/use-cases/login.use-case";
+import { GetUserProfileUseCase } from "../../application/use-cases/get-user-profile.use-case";
 
 
 
@@ -14,7 +15,8 @@ import { LoginUseCase } from "../../application/use-cases/login.use-case";
 export class UserController{
 
     constructor(private readonly registerUserUseCase:RegisterUserUseCase,
-        private readonly loginUseCase: LoginUseCase
+        private readonly loginUseCase: LoginUseCase,
+        private readonly getUserProfileUseCase: GetUserProfileUseCase,
     ){}
     @Post('register')
     @HttpCode(HttpStatus.CREATED)
@@ -30,9 +32,6 @@ export class UserController{
     @UseGuards(JwtAuthGuard)
     @Get('me')
     async getProfile(@Req() req:any){
-        return {
-            message: "This is a protected route",
-            user:req.user
-        }
+        return this.getUserProfileUseCase.execute(req.user.sub);
     }
 }
