@@ -1,7 +1,7 @@
 
-import { Get, HttpCode, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
-import { OnEvent } from '@nestjs/event-emitter';
+
 import { RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import { Transaction } from '../../domain/entities/transaction.entity';
 import { WalletDebitedEvent, WalletDebitFailedEvent } from '@nexuspay/domain';
@@ -43,13 +43,5 @@ export class TransactionSaga{
       this.logger.error('Rollback failed', e);
     }
   }
-  @Get('health')
-@HttpCode(HttpStatus.OK)
-health() {
-  return {
-    status: 'ok',
-    service: 'transaction-service',
-    timestamp: new Date().toISOString(),
-  };
-}
+ 
 }
