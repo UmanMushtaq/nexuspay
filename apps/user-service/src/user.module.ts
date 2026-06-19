@@ -16,7 +16,7 @@ import { ReviewKycUseCase } from "./application/use-cases/review-kyc.use-case";
 import { KycController } from "./infrastructure/controllers/kyc.controller";
 import { RedisModule } from "@nestjs-modules/ioredis";
 import { GetUserProfileUseCase } from "./application/use-cases/get-user-profile.use-case";
-
+import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 
 
 export const USER_REPOSITORY = 'USER_REPOSITORY';
@@ -30,6 +30,12 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
             secret:'your-secret-key-change-in-production',
             signOptions:{expiresIn:'1h'},
         }),
+       RabbitMQModule.forRoot({
+            exchanges: [{ name: 'nexuspay.exchange', type: 'topic' }],
+            uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
+            connectionInitOptions: { wait: false },
+    }),
+
         RedisModule.forRoot({
            type:'single',
            options:{

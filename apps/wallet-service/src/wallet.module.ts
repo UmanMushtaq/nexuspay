@@ -31,6 +31,7 @@ import { redisStore } from 'cache-manager-redis-yet';
   exchanges: [
     { name: 'exchange.transaction', type: 'topic' },
     { name: 'wallet.exchange', type: 'topic' },
+    { name: 'wallet.exchange', type: 'topic' },
   ],
   uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
   connectionInitOptions: { wait: false },
