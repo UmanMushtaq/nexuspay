@@ -40,6 +40,30 @@ import { connect } from 'http2';
       name: 'wallet.exchange',        // ← Add this
       type: 'topic',
     },
+    {
+      name:'exchange.transaction.dlx',
+      type:'topic',
+    },
+      ],
+      queues:[
+        {
+          name: 'transaction.intiated.queue',
+          exchange:'exchange.transaction',
+          routingKey:'transaction.initiated',
+          options:{
+            durable:true,
+            deadLetterExchange:'exchange.transaction.dlx',
+            deadLetterRoutingKey:'transaction.initiated.dead',
+          }
+        },
+        {
+          name:'transaction.intiated.dead.queue',
+          exchange:'exchange.transaction.dlx',
+          routingKey:'transaction.initiated.dead',
+          options:{
+            durable:true,
+          }
+        }
       ],
         uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
         connectionInitOptions: { wait: false },
