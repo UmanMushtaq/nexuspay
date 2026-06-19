@@ -4,13 +4,15 @@ import { ReviewKycDto } from "../../presentation/dtos/review-kyc.dto";
 import { KycResponseDto } from "../../presentation/dtos/kyc-response.dto";
 import { KycStatus } from "../../domain/entities/KycStatus.enum";
 import { DomainException } from "../../common/exceptions/domain.exception";
-
+import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
 
 
 
 @Injectable()
 export class ReviewKycUseCase{
-    constructor(private readonly userRepository:UserRepositoryImpl){}
+    constructor(private readonly userRepository:UserRepositoryImpl,
+        private readonly amqpConnection:AmqpConnection
+    ){}
 
     async execute(userId:string, dto:ReviewKycDto):Promise<KycResponseDto>{
         try {
@@ -39,7 +41,14 @@ export class ReviewKycUseCase{
         dto.decision,
         dto.reviewedBy,
       );
-
+      const routingKey = dto.decision === KycStatus.APPROVED ? 'kyc.approved' : 'kyc.rejected';
+      await this.amqpConnection.publish('kyc.exchange', routingKey, {
+        userId: user.id,
+        email: user.email,
+        status: dto.decision,
+        reviewedBy: dto.reviewedBy,
+        rejectionReason: dto.rejectionReason,
+      });
       const message =
         dto.decision === KycStatus.APPROVED
           ? 'KYC approved successfully.'
