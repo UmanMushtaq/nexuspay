@@ -9,11 +9,12 @@ import { KycOrmEntity } from "../entities/kyc.orm-entity";
 export const databaseConfig: TypeOrmModuleOptions={
 type: 'postgres',
 host: 'localhost',
+database: 'user_db',
 port: 5438,
 username: 'postgres',
 password: 'password',
 entities: [UserOrmEntity, KycOrmEntity],
-synchronize: false, // Disable in production 
+synchronize: true, // Disable in production 
 logging:true,
 autoLoadEntities: true
 }

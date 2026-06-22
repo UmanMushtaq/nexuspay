@@ -11,6 +11,9 @@ import { WalletSaga } from "./application/sagas/wallet.saga";
 import { RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from "./infrastructure/strategies/jwt.strategy";
 
 @Module({
  imports: [
@@ -27,27 +30,36 @@ import { redisStore } from 'cache-manager-redis-yet';
       }),
     }),
   }),
+  PassportModule,
+JwtModule.register({
+  secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+}),
   RabbitMQModule.forRoot({
   exchanges: [
+    { name: 'nexuspay.exchange', type: 'topic' },
     { name: 'exchange.transaction', type: 'topic' },
-    { name: 'wallet.exchange', type: 'topic' },
     { name: 'wallet.exchange', type: 'topic' },
   ],
   uri: process.env.RABBITMQ_URI || 'amqp://guest:guest@localhost:5672',
   connectionInitOptions: { wait: false },
+
 }),
    TypeOrmModule.forRootAsync({
             useFactory:()=>databaseConfig,
         }),
     TypeOrmModule.forFeature([WalletOrmEntity]),
   ],
-  controllers: [WalletController],
+  controllers: [
+    WalletController,
+    
+  ],
   providers: [
     CreateWalletUseCase,
     WalletRepositoryImpl,
     UserRegisteredConsumer,
     RabbitMQService,
     WalletSaga,
+    JwtStrategy
     
   ],
 })
