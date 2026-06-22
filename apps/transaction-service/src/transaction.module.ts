@@ -12,7 +12,7 @@ import { CreateTransactionUseCase } from './application/use-cases/create-transac
 import { RedisService } from './infrastructure/redis/redis.service';
 import { RabbitMQPublisher } from './infrastructure/messaging/rabbit-mq.publisher';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq/lib/rabbitmq.module';
-import { connect } from 'http2';
+import { KafkaProducerService } from './infrastructure/kafka/kafka-producer.service';
 
 @Module({
   imports: [
@@ -47,7 +47,7 @@ import { connect } from 'http2';
       ],
       queues:[
         {
-          name: 'transaction.intiated.queue',
+          name: 'transaction.initiated.queue',
           exchange:'exchange.transaction',
           routingKey:'transaction.initiated',
           options:{
@@ -57,7 +57,7 @@ import { connect } from 'http2';
           }
         },
         {
-          name:'transaction.intiated.dead.queue',
+          name:'transaction.initiated.dead.queue',
           exchange:'exchange.transaction.dlx',
           routingKey:'transaction.initiated.dead',
           options:{
@@ -81,6 +81,7 @@ import { connect } from 'http2';
     RedisService,
     RabbitMQPublisher,
     CreateTransactionUseCase,
+    KafkaProducerService,
   ],
   exports: [
     RedisService,
