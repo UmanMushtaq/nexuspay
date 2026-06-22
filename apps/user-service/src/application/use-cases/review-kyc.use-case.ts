@@ -4,19 +4,18 @@ import { ReviewKycDto } from "../../presentation/dtos/review-kyc.dto";
 import { KycResponseDto } from "../../presentation/dtos/kyc-response.dto";
 import { KycStatus } from "../../domain/entities/KycStatus.enum";
 import { DomainException } from "../../common/exceptions/domain.exception";
-import { AmqpConnection } from "@golevelup/nestjs-rabbitmq";
-
-
+import { KycEventPublisher } from "../../infrastructure/messaging/kyc-event.publisher";
 
 @Injectable()
-export class ReviewKycUseCase{
-    constructor(private readonly userRepository:UserRepositoryImpl,
-        private readonly amqpConnection:AmqpConnection
-    ){}
+export class ReviewKycUseCase {
+  constructor(
+    private readonly userRepository: UserRepositoryImpl,
+    private readonly kycEventPublisher: KycEventPublisher,
+  ) {}
 
-    async execute(userId:string, dto:ReviewKycDto):Promise<KycResponseDto>{
-        try {
-                  const user = await this.userRepository.findById(userId);
+  async execute(userId: string, dto: ReviewKycDto): Promise<KycResponseDto> {
+    try {
+      const user = await this.userRepository.findById(userId);
       if (!user) {
         throw new DomainException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -41,14 +40,13 @@ export class ReviewKycUseCase{
         dto.decision,
         dto.reviewedBy,
       );
-      const routingKey = dto.decision === KycStatus.APPROVED ? 'kyc.approved' : 'kyc.rejected';
-      await this.amqpConnection.publish('kyc.exchange', routingKey, {
-        userId: user.id,
-        email: user.email,
-        status: dto.decision,
-        reviewedBy: dto.reviewedBy,
-        rejectionReason: dto.rejectionReason,
-      });
+
+      if (dto.decision === KycStatus.APPROVED) {
+        await this.kycEventPublisher.publishKycApproved(user.id, user.email);
+      } else {
+        await this.kycEventPublisher.publishKycRejected(user.id, user.email, dto.rejectionReason);
+      }
+
       const message =
         dto.decision === KycStatus.APPROVED
           ? 'KYC approved successfully.'
@@ -60,13 +58,13 @@ export class ReviewKycUseCase{
         status: dto.decision,
         message,
       });
-        } catch (error) {
-            if (error instanceof DomainException) throw error;
+    } catch (error) {
+      console.error('FULL ERROR:', error);
+      if (error instanceof DomainException) throw error;
       throw new DomainException(
         'Failed to review KYC. Please try again later.',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-   }
-        
     }
+  }
 }

@@ -8,6 +8,7 @@ import { WalletLockedException } from '../../common/exceptions/wallet-locked.exc
 import { TransactionType } from '../../domain/entities/transaction-type.enum';
 import { TransactionInitiatedEvent } from '../events/transaction-initiated.event';
 import { RabbitMQPublisher } from '../../infrastructure/messaging/rabbit-mq.publisher';
+import { KafkaProducerService } from '../../infrastructure/kafka/kafka-producer.service';
 
 @Injectable()
 export class CreateTransactionUseCase {
@@ -16,7 +17,9 @@ export class CreateTransactionUseCase {
   constructor(
     private readonly transactionRepository: TransactionRepositoryImpl,
     private readonly redisService: RedisService,
-    private readonly rabbitPublish:RabbitMQPublisher
+    private readonly rabbitPublish:RabbitMQPublisher,
+
+    private readonly kafkaProducer: KafkaProducerService,
   ) {}
 
   async execute(command: CreateTransferCommand) {
@@ -57,6 +60,10 @@ export class CreateTransactionUseCase {
        await this.rabbitPublish.publishTransactionInitiated(event);
       this.logger.log(`Event published: TransactionInitiatedEvent [${event.reference}]`);
       return savedTransaction;
+      await this.kafkaProducer.publishToKafka('transactions.stream', {
+  ...event,
+  timestamp: new Date().toISOString(),
+});
 
     } catch (error) {
       if (error instanceof DomainException) {
