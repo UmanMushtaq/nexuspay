@@ -31,7 +31,7 @@ export class RedisService{
     }
 
     async unlockWallet(walletId:string):Promise<void>{
-        const lockKey = `lock:wallet:${walletId}`;
+        const lockKey = `wallet_lock:${walletId}`;
         try {
               await this.cacheManager.del(lockKey);
         } catch (error) {
@@ -40,7 +40,7 @@ export class RedisService{
   
     }
     async isWalletLocked(walletId: string): Promise<boolean> {
-    const lockKey = `lock:wallet:${walletId}`;
+    const lockKey = `wallet_lock:${walletId}`;
     try {
         const value = await this.cacheManager.get(lockKey);
     return !!value;
