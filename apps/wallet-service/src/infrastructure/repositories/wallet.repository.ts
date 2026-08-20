@@ -55,4 +55,16 @@ export class WalletRepositoryImpl implements WalletRepository{
   async unlockWallet(userId: string): Promise<void> {
     await this.walletRepo.update({ userId }, { isLocked: false });
   }
+    async deductBalance(userId: string, amount: number): Promise<Wallet> {
+    const wallet = await this.findByUserId(userId);
+    if (!wallet) throw new Error('Wallet not found');
+    wallet.deductBalance(amount);
+    await this.walletRepo.update({ userId }, { balance: wallet.balance });
+    return wallet;
+  }
+   async findById(id: string): Promise<Wallet | null> {
+    const saved = await this.walletRepo.findOne({ where: { id } });
+    if (!saved) return null;
+    return new Wallet(saved);
+  }
 }

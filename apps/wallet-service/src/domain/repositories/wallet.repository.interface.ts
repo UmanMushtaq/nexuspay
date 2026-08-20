@@ -6,4 +6,6 @@ export interface WalletRepository {
   updateBalance(userId: string, amount: number): Promise<Wallet>;
   lockWallet(userId: string): Promise<void>;
   unlockWallet(userId: string): Promise<void>;
+  deductBalance(userId: string, amount: number): Promise<Wallet>;
+  findById(id: string): Promise<Wallet | null>;
 }
