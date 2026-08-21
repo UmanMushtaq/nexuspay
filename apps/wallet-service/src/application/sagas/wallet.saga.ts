@@ -33,7 +33,13 @@ export class WalletSaga {
       await this.walletRepository.deductBalance(wallet.userId, event.amount);
 
       this.logger.log(`[WalletSaga] ✅ Debit successful for ${event.reference}`);
+const receiverWallet = await this.walletRepository.findById(event.toWalletId);
+      if (!receiverWallet) {
+        throw new Error(`Receiver wallet not found: ${event.toWalletId}`);
+      }
 
+      await this.walletRepository.updateBalance(receiverWallet.userId, event.amount);
+      this.logger.log(`[WalletSaga] ✅ Credit successful for ${event.reference}`);
       const successEvent = new WalletDebitedEvent(
         event.transactionId,
         event.reference,
