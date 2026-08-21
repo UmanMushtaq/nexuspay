@@ -69,4 +69,27 @@ export class TransactionRepositoryImpl implements TransactionRepository {
     }
   );
   }
+
+  async findByWalletId(walletId: string): Promise<Transaction[]> {
+  const saved = await this.transactionRepo.find({
+    where: [
+      { fromWalletId: walletId },
+      { toWalletId: walletId },
+    ],
+    order: { createdAt: 'DESC' },
+    take: 50,
+  });
+  return saved.map(s => new Transaction({
+    id: s.id,
+    fromWalletId: s.fromWalletId,
+    toWalletId: s.toWalletId,
+    amount: s.amount,
+    currency: s.currency,
+    type: s.type as any,
+    status: s.status as any,
+    reference: s.reference,
+    createdAt: s.createdAt,
+    updatedAt: s.updatedAt,
+  }));
+}
 }
