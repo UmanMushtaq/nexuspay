@@ -43,7 +43,7 @@ export class WalletRepositoryImpl implements WalletRepository{
     if (!wallet) throw new Error('Wallet not found');
 
     wallet.addBalance(amount);
-    await this.walletRepo.update(userId, { balance: wallet.balance });
+    await this.walletRepo.update({ userId }, { balance: wallet.balance });
 
     return wallet;
   }
