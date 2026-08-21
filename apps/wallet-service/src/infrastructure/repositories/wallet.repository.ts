@@ -38,13 +38,12 @@ export class WalletRepositoryImpl implements WalletRepository{
     return new Wallet(saved);
   }
 
-  async updateBalance(userId: string, amount: number): Promise<Wallet> {
+   async updateBalance(userId: string, amount: number): Promise<Wallet> {
     const wallet = await this.findByUserId(userId);
     if (!wallet) throw new Error('Wallet not found');
-
-    wallet.addBalance(amount);
+    wallet.addBalance(Number(amount));
+    wallet.balance = Number(wallet.balance) + Number(amount);
     await this.walletRepo.update({ userId }, { balance: wallet.balance });
-
     return wallet;
   }
 
