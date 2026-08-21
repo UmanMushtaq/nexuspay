@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
-
+import { GetTransactionHistoryUseCase } from './application/use-cases/get-transaction-history.use-case';
 import { TransactionSaga } from './application/sagas/transaction.saga';
 import { TransactionRepositoryImpl } from './infrastructure/repositories/transaction.repository';
 import { TransactionOrmEntity } from './infrastructure/persistence/entities/transaction.orm-entity';
@@ -82,6 +82,7 @@ import { KafkaProducerService } from './infrastructure/kafka/kafka-producer.serv
     RabbitMQPublisher,
     CreateTransactionUseCase,
     KafkaProducerService,
+    GetTransactionHistoryUseCase,
   ],
   exports: [
     RedisService,
