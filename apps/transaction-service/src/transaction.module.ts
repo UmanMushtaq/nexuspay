@@ -13,6 +13,9 @@ import { RedisService } from './infrastructure/redis/redis.service';
 import { RabbitMQPublisher } from './infrastructure/messaging/rabbit-mq.publisher';
 import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq/lib/rabbitmq.module';
 import { KafkaProducerService } from './infrastructure/kafka/kafka-producer.service';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './infrastructure/strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -69,6 +72,11 @@ import { KafkaProducerService } from './infrastructure/kafka/kafka-producer.serv
         connectionInitOptions: { wait: false },
         enableControllerDiscovery: true,
     }),
+    PassportModule,
+JwtModule.register({
+  secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+  signOptions: { expiresIn: '1h' },
+}),
     TypeOrmModule.forRootAsync({
       useFactory: () => databaseConfig,
     }),
@@ -83,6 +91,7 @@ import { KafkaProducerService } from './infrastructure/kafka/kafka-producer.serv
     CreateTransactionUseCase,
     KafkaProducerService,
     GetTransactionHistoryUseCase,
+    JwtStrategy
   ],
   exports: [
     RedisService,

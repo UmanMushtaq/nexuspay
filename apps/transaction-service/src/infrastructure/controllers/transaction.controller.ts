@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Param, Post, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Logger, Param, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { CreateTransactionUseCase } from "../../application/use-cases/create-transaction.use-case";
 import { DomainException } from "../../common/exceptions/domain.exception";
 import { CreateTransferCommand } from "../../application/commands/create-transfer.command";
 import { CreateTransactionDto } from "../../application/dtos/create-transaction.dto";
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { GetTransactionHistoryUseCase } from '../../application/use-cases/get-transaction-history.use-case';
 
 
@@ -56,6 +57,7 @@ export class TransactionController{
     }
 
     @Get(':walletId/history')
+    @UseGuards(JwtAuthGuard)
 async getTransactionHistory(@Param('walletId') walletId: string) {
   try {
     const transactions = await this.getTransactionHistoryUseCase.execute(walletId);
