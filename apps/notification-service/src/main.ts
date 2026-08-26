@@ -8,7 +8,8 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true,
   }));
-  await app.listen(3005);
-  console.log('🚀 Notification Service running on http://localhost:3005');
+const port = process.env.PORT || 3005;
+  await app.listen(port);
+  console.log(`🚀 Notification Service running on http://localhost:${port}`);
 }
 bootstrap();

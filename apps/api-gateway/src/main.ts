@@ -14,9 +14,10 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true,
   }));
-  await app.listen(3000);
+const port = process.env.PORT || 3000;
+  await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:3000`,
+    `🚀 Application is running on: http://localhost:${port}`,
   );
   Logger.log('👉 Proxying to User Service (3001) and Wallet Service (3002)');
 }
