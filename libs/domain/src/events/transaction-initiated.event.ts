@@ -5,7 +5,7 @@ export class TransactionInitiatedEvent {
     public readonly fromWalletId: string,
     public readonly toWalletId: string,
     public readonly amount: number,
-    public readonly currency: string = 'USD',
+    public readonly currency = 'USD',
     public readonly userId?: string,
     public readonly timestamp?: string,
   ) {}

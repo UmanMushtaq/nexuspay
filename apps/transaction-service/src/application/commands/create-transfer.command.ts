@@ -6,7 +6,7 @@ export class CreateTransferCommand{
         public readonly fromWalletId:string,
         public readonly toWalletId:string,
         public readonly amount:number,
-        public readonly currency:string = 'USD',
+        public readonly currency = 'USD',
         public readonly description?:string,
         public readonly userId?:string
     ){}

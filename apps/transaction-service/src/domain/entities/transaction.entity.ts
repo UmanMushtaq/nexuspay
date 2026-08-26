@@ -24,7 +24,7 @@ export class Transaction{
     this.validate()
   }
   static create(fromWalletId:string, toWalletId:string, amount:number,
-    type:TransactionType.TRANSFER, currency:string = 'USD',description?:string
+    type:TransactionType.TRANSFER, currency = 'USD',description?:string
   ):Transaction
   {
     if (amount<=0){

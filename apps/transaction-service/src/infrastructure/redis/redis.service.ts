@@ -8,7 +8,7 @@ import { WalletLockedException } from "../../common/exceptions/wallet-locked.exc
 export class RedisService{
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache ){}
 
-    async lockWallet(walletId:string, ttlSeconds:number = 30):Promise<boolean>{
+    async lockWallet(walletId:string, ttlSeconds = 30):Promise<boolean>{
         const lockKey = `wallet_lock:${walletId}`
         try {
             const locked = await this.cacheManager.set(
@@ -58,7 +58,7 @@ export class RedisService{
       return null;
     }
   }
-  async set(key: string, value: any, ttlSeconds: number = 300): Promise<void> {
+  async set(key: string, value: any, ttlSeconds = 300): Promise<void> {
     try {
       await this.cacheManager.set(key, value, ttlSeconds);
     } catch (error) {
