@@ -4,6 +4,6 @@ export class WalletDebitedEvent {
     public readonly reference: string,
     public readonly fromWalletId: string,
     public readonly amount: number,
-    public readonly success: boolean = true,
+    public readonly success = true,
   ) {}
 }
