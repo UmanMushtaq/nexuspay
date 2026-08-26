@@ -8,11 +8,11 @@ import { KycOrmEntity } from "../entities/kyc.orm-entity";
 
 export const databaseConfig: TypeOrmModuleOptions={
 type: 'postgres',
-host: 'localhost',
+host: process.env.DB_HOST || 'localhost',
 database: 'user_db',
-port: 5438,
+port: Number(process.env.DB_PORT) || 5438,
 username: 'postgres',
-password: 'password',
+password: process.env.DB_PASSWORD || 'password',
 entities: [UserOrmEntity, KycOrmEntity],
 synchronize: true, // Disable in production 
 logging:true,

@@ -11,9 +11,10 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
   }));
 
-  await app.listen(3002);
+ const port = process.env.PORT || 3002;
+  await app.listen(port);
 
-  console.log('🚀 Wallet Service running on http://localhost:3002');
+  console.log(`🚀 Wallet Service running on http://localhost:${port}`);
 }
 
 bootstrap();

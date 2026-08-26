@@ -15,9 +15,10 @@ async function bootstrap() {
     }),
   );
   app.enableCors()
-  await app.listen(3001);   // Using port 3001 to avoid conflict with api-gateway later
+  const port = process.env.PORT || 3001;
+  await app.listen(port);  // Using port 3001 to avoid conflict with api-gateway later
 
-  console.log(`🚀 User Service is running on: http://localhost:3001`);
+  console.log(`🚀 User Service is running on: http://localhost:${port}`);
 }
 
 bootstrap();

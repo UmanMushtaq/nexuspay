@@ -3,10 +3,10 @@ import { TransactionOrmEntity } from '../entities/transaction.orm-entity';
 
 export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5434,                   
+host: process.env.DB_HOST || 'localhost',
+ port: Number(process.env.DB_PORT) || 5434,            
   username: 'postgres',
-  password: 'password',
+  password: process.env.DB_PASSWORD || 'password',
   database: 'transaction_db',
   entities: [TransactionOrmEntity],
   synchronize: true,            
