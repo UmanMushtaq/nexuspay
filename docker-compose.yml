@@ -323,6 +323,8 @@ services:
       - "3000:3000"
     environment:
       PORT: 3000
+      USER_SERVICE_URL: http://user-service:3001
+      WALLET_SERVICE_URL: http://wallet-service:3002
 
   payment-gateway-service:
     build:
