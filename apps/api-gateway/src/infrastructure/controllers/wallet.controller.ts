@@ -1,17 +1,22 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Headers, Param } from "@nestjs/common";
 import { firstValueFrom } from "rxjs";
 import { HttpService } from '@nestjs/axios';
-
+import { serviceUrls } from "../config/service-urls.config";
 
 @Controller('wallets')
-export class WalletController{
-    constructor(private readonly httpService:HttpService){}
+export class WalletController {
+    constructor(private readonly httpService: HttpService) {}
 
     @Get(':userId')
-  async getWallet(@Param('userId') userId: string) {
-    const response:any = await firstValueFrom(
-      this.httpService.get(`http://localhost:3002/wallets/${userId}`)
-    );
-    return response.data;
-  }
+    async getWallet(
+        @Param('userId') userId: string,
+        @Headers('authorization') authHeader: string,
+    ) {
+        const response: any = await firstValueFrom(
+            this.httpService.get(`${serviceUrls.wallet}/wallets/${userId}`, {
+                headers: { Authorization: authHeader },
+            })
+        );
+        return response.data;
+    }
 }
