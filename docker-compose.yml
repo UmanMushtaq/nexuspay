@@ -176,6 +176,167 @@ services:
       timeout: 10s
       retries: 5
 
+  # ==================== APPLICATION SERVICES ====================
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: user-service
+    container_name: nexuspay-user-service
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DB_HOST: user-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: nexuspay123
+      RABBITMQ_URI: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      user-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  wallet-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: wallet-service
+    container_name: nexuspay-wallet-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      DB_HOST: wallet-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: nexuspay123
+      RABBITMQ_URI: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      wallet-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  transaction-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: transaction-service
+    container_name: nexuspay-transaction-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      PORT: 3003
+      DB_HOST: transaction-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: nexuspay123
+      RABBITMQ_URI: amqp://guest:guest@rabbitmq:5672
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      transaction-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  analytics-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: analytics-service
+    container_name: nexuspay-analytics-service
+    restart: unless-stopped
+    ports:
+      - "3004:3004"
+    environment:
+      PORT: 3004
+      ANALYTICS_DB_HOST: analytics-db
+      ANALYTICS_DB_PORT: 5432
+      ANALYTICS_DB_USER: postgres
+      ANALYTICS_DB_PASSWORD: password
+      ANALYTICS_DB_NAME: analytics_db
+      KAFKA_BROKER: kafka:9092
+    depends_on:
+      analytics-db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: notification-service
+    container_name: nexuspay-notification-service
+    restart: unless-stopped
+    ports:
+      - "3005:3005"
+    environment:
+      PORT: 3005
+      DB_HOST: notification-db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      RABBITMQ_URI: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      notification-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: api-gateway
+    container_name: nexuspay-api-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+
+  payment-gateway-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: payment-gateway-service
+    container_name: nexuspay-payment-gateway-service
+    restart: unless-stopped
+    ports:
+      - "3006:3000"
+    environment:
+      PORT: 3000
+
 volumes:
   user-db-data:
   wallet-db-data:
