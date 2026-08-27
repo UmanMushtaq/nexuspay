@@ -325,6 +325,9 @@ services:
       PORT: 3000
       USER_SERVICE_URL: http://user-service:3001
       WALLET_SERVICE_URL: http://wallet-service:3002
+      TRANSACTION_SERVICE_URL: http://transaction-service:3003
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+      ANALYTICS_SERVICE_URL: http://analytics-service:3004
 
   payment-gateway-service:
     build:
