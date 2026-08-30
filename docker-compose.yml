@@ -328,6 +328,9 @@ services:
       TRANSACTION_SERVICE_URL: http://transaction-service:3003
       NOTIFICATION_SERVICE_URL: http://notification-service:3005
       ANALYTICS_SERVICE_URL: http://analytics-service:3004
+      REDIS_HOST: redis
+      REDIS_PORT: 6379  
+      REDIS_PASSWORD: nexuspay123
 
   payment-gateway-service:
     build:
