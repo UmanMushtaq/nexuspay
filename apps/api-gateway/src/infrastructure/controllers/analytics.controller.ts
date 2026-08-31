@@ -9,7 +9,7 @@ export class AnalyticsController {
 
     @Get('events')
     async getEvents(@Headers('authorization') authHeader: string) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.get(`${serviceUrls.analytics}/analytics/events`, {
                 headers: { Authorization: authHeader },
             })

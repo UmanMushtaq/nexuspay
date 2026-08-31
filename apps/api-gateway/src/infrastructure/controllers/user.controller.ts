@@ -10,7 +10,7 @@ export class UserController {
     @Post('register')
     @HttpCode(HttpStatus.CREATED)
     async register(@Body() body: any) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.post(`${serviceUrls.user}/users/register`, body)
         );
         return response.data;
@@ -19,7 +19,7 @@ export class UserController {
     @Post('login')
     @HttpCode(HttpStatus.OK)
     async login(@Body() body: any) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.post(`${serviceUrls.user}/users/login`, body)
         );
         return response.data;
@@ -27,7 +27,7 @@ export class UserController {
 
     @Get('me')
     async getProfile(@Headers('authorization') authHeader: string) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.get(`${serviceUrls.user}/users/me`, {
                 headers: { Authorization: authHeader },
             })
@@ -41,7 +41,7 @@ export class UserController {
         @Body() body: any,
         @Headers('authorization') authHeader: string,
     ) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.post(`${serviceUrls.user}/users/${id}/kyc`, body, {
                 headers: { Authorization: authHeader },
             })
@@ -55,7 +55,7 @@ export class UserController {
         @Body() body: any,
         @Headers('authorization') authHeader: string,
     ) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.post(`${serviceUrls.user}/users/${id}/kyc/review`, body, {
                 headers: { Authorization: authHeader },
             })

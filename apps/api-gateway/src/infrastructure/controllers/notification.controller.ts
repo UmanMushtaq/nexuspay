@@ -12,7 +12,7 @@ export class NotificationController {
         @Param('userId') userId: string,
         @Headers('authorization') authHeader: string,
     ) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.get(`${serviceUrls.notification}/notifications/${userId}`, {
                 headers: { Authorization: authHeader },
             })

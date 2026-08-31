@@ -35,7 +35,9 @@ export class RateLimitGuard implements CanActivate{
                     await this.checkLimit(`ratelimit:user:${payload.sub}`);
                 }
             }
-            catch{}
+            catch{
+                void 0
+            }
 
            
         }

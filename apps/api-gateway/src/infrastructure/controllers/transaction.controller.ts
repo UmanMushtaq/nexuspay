@@ -12,7 +12,7 @@ export class TransactionController {
         @Body() body: any,
         @Headers('authorization') authHeader: string,
     ) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.post(`${serviceUrls.transaction}/transactions/transfer`, body, {
                 headers: { Authorization: authHeader },
             })
@@ -25,7 +25,7 @@ export class TransactionController {
         @Param('walletId') walletId: string,
         @Headers('authorization') authHeader: string,
     ) {
-        const response: any = await firstValueFrom(
+        const response = await firstValueFrom(
             this.httpService.get(`${serviceUrls.transaction}/transactions/${walletId}/history`, {
                 headers: { Authorization: authHeader },
             })
