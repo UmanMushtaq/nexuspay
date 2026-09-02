@@ -18,6 +18,7 @@ import { RedisModule } from "@nestjs-modules/ioredis";
 import { GetUserProfileUseCase } from "./application/use-cases/get-user-profile.use-case";
 import { AmqpConnection, RabbitMQModule } from "@golevelup/nestjs-rabbitmq";
 import { KycEventPublisher } from "./infrastructure/messaging/kyc-event.publisher";
+import { LogoutUseCase } from "./application/use-cases/logout.use-cases";
 
 
 export const USER_REPOSITORY = 'USER_REPOSITORY';
@@ -59,7 +60,8 @@ export const USER_REPOSITORY = 'USER_REPOSITORY';
     UserRegisteredConsumer,
     ReviewKycUseCase,
     GetUserProfileUseCase,
-   KycEventPublisher
+   KycEventPublisher,
+   LogoutUseCase,
   ],
 })
 
