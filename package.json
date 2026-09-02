@@ -8,7 +8,8 @@
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f user-service",
-    "dev:full": "docker compose up -d && npx nx serve user-service"
+    "dev:full": "docker compose up -d && npx nx serve user-service",
+    "seed:admin": "ts-node apps/user-service/src/infrastructure/persistence/seeds/admin.seed.ts"
   },
   "private": true,
   "devDependencies": {
@@ -33,6 +34,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
     "@types/passport-local": "^1.0.38",
+    "@types/pg": "^8.23.1",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
