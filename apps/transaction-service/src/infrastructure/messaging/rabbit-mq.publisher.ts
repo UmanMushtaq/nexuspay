@@ -9,12 +9,14 @@ export class RabbitMQPublisher{
     async publishTransactionInitiated(event:TransactionInitiatedEvent):Promise<void>{
         try {
             await this.amqpConnection.publish('exchange.transaction', 'transaction.initiated', {...event, timestamp: new Date().toISOString()
-                
+
             });
             this.logger.log(`Published event to RabbitMQ: TransactionInitiatedEvent [${event.reference}]`);
         } catch (error: any) {
+            // Swallowing this would leave the transaction PENDING with nothing
+            // to pick it up, so the caller has to see the failure.
             this.logger.error(`Failed to publish event: ${error.message}`);
-            
+            throw error;
         }
     }
 }
