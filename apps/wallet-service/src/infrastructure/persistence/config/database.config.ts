@@ -1,6 +1,7 @@
 
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { WalletOrmEntity } from '../entities/wallet.orm-entity';
+import { ProcessedEventOrmEntity } from '../entities/processed-event.orm-entity';
 
 export const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -9,7 +10,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   username: 'postgres',
   password: process.env.DB_PASSWORD || 'password',
   database: 'wallet_db',
-  entities: [WalletOrmEntity],
+  entities: [WalletOrmEntity, ProcessedEventOrmEntity],
   synchronize: true,        // temporary for development
   logging: true,
   autoLoadEntities: true,

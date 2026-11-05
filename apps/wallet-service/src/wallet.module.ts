@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { WalletOrmEntity } from "./infrastructure/persistence/entities/wallet.orm-entity";
+import { ProcessedEventOrmEntity } from "./infrastructure/persistence/entities/processed-event.orm-entity";
 import { WalletRepositoryImpl } from "./infrastructure/repositories/wallet.repository";
 import { CreateWalletUseCase } from "./application/use-cases/create-wallet.use-case";
 import { WalletController } from "./infrastructure/controllers/wallet.controller";
@@ -47,7 +48,7 @@ JwtModule.register({
    TypeOrmModule.forRootAsync({
             useFactory:()=>databaseConfig,
         }),
-    TypeOrmModule.forFeature([WalletOrmEntity]),
+    TypeOrmModule.forFeature([WalletOrmEntity, ProcessedEventOrmEntity]),
   ],
   controllers: [
     WalletController,
