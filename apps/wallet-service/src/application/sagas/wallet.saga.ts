@@ -1,6 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
-import { TransactionInitiatedEvent, WalletDebitedEvent, WalletDebitFailedEvent } from '@nexuspay/domain';
+import {
+  TransactionInitiatedEvent,
+  WalletDebitedEvent,
+  WalletDebitFailedEvent,
+  TransferReversalRequestedEvent,
+  TransferReversedEvent,
+} from '@nexuspay/domain';
 import { WalletRepositoryImpl } from '../../infrastructure/repositories/wallet.repository';
 
 @Injectable()
@@ -18,59 +24,79 @@ export class WalletSaga {
   async handleTransactionInitiated(event: TransactionInitiatedEvent): Promise<void> {
     this.logger.log(`[WalletSaga] Received TransactionInitiated: ${event.reference} | Amount: ${event.amount}`);
 
-    try {
-      this.logger.log(`[WalletSaga] Processing debit for wallet ${event.fromWalletId}`);
+    const outcome = await this.walletRepository.transfer({
+      transactionId: event.transactionId,
+      fromWalletId: event.fromWalletId,
+      toWalletId: event.toWalletId,
+      amount: Number(event.amount),
+    });
 
-      const wallet = await this.walletRepository.findById(event.fromWalletId);
-      if (!wallet) {
-        throw new Error(`Wallet not found: ${event.fromWalletId}`);
-      }
+    if (outcome === 'DUPLICATE') {
+      this.logger.warn(`[WalletSaga] Redelivery ignored for ${event.reference}`);
+      return;
+    }
 
-      if (!wallet.canSpend(event.amount)) {
-        throw new Error('Insufficient funds or wallet is locked');
-      }
-
-      await this.walletRepository.deductBalance(wallet.userId, event.amount);
-
-      this.logger.log(`[WalletSaga] ✅ Debit successful for ${event.reference}`);
-const receiverWallet = await this.walletRepository.findById(event.toWalletId);
-      if (!receiverWallet) {
-        throw new Error(`Receiver wallet not found: ${event.toWalletId}`);
-      }
-
-      await this.walletRepository.updateBalance(receiverWallet.userId, event.amount);
-      this.logger.log(`[WalletSaga] ✅ Credit successful for ${event.reference}`);
-      const successEvent = new WalletDebitedEvent(
-        event.transactionId,
-        event.reference,
-        event.fromWalletId,
-        event.amount
-      );
-
-      await this.amqpConnection.publish(
-        'wallet.exchange',
-        'wallet.debited',
-        successEvent
-      );
-
-      this.logger.log(`[WalletSaga] Debit processed successfully for transaction ${event.reference}`);
-
-    } catch (error: any) {
-      this.logger.error(`[WalletSaga] Failed to process debit for transaction ${event.reference}`, error);
-
-      const failedEvent = new WalletDebitFailedEvent(
-        event.transactionId,
-        event.reference,
-        event.fromWalletId,
-        error.message || 'Unknown error'
-      );
-
+    if (outcome !== 'OK') {
+      this.logger.warn(`[WalletSaga] Transfer rejected for ${event.reference}: ${outcome}`);
       await this.amqpConnection.publish(
         'wallet.exchange',
         'wallet.debit.failed',
-        failedEvent
+        new WalletDebitFailedEvent(
+          event.transactionId,
+          event.reference,
+          event.fromWalletId,
+          outcome,
+        ),
       );
+      return;
     }
+
+    this.logger.log(`[WalletSaga] Transfer settled for ${event.reference}`);
+    await this.amqpConnection.publish(
+      'wallet.exchange',
+      'wallet.debited',
+      new WalletDebitedEvent(
+        event.transactionId,
+        event.reference,
+        event.fromWalletId,
+        Number(event.amount),
+      ),
+    );
   }
 
+  // Undoes a settled transfer when transaction-service asks for it.
+  @RabbitSubscribe({
+    exchange: 'exchange.transaction',
+    routingKey: 'transaction.reversal.requested',
+    queue: 'wallet.transaction.reversal.queue',
+  })
+  async handleReversalRequested(event: TransferReversalRequestedEvent): Promise<void> {
+    this.logger.log(`[WalletSaga] Reversal requested for ${event.reference}: ${event.reason}`);
+
+    const outcome = await this.walletRepository.refund({
+      transactionId: event.transactionId,
+      walletId: event.fromWalletId,
+      amount: Number(event.amount),
+    });
+
+    if (outcome === 'WALLET_NOT_FOUND') {
+      this.logger.error(`[WalletSaga] Cannot refund ${event.reference}, wallet missing`);
+      return;
+    }
+
+    if (outcome === 'DUPLICATE') {
+      this.logger.warn(`[WalletSaga] Refund already applied for ${event.reference}`);
+    }
+
+    await this.amqpConnection.publish(
+      'wallet.exchange',
+      'wallet.reversed',
+      new TransferReversedEvent(
+        event.transactionId,
+        event.reference,
+        event.fromWalletId,
+        Number(event.amount),
+      ),
+    );
+  }
 }
